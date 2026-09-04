@@ -447,6 +447,23 @@
         border-radius: var(--r-sm);
         letter-spacing: 0.04em;
       }
+
+      /* ── Additional responsive fixes ── */
+      @media (max-width: 600px) {
+        .tl-item { gap: 0.75rem; }
+        .tl-left { display: none; }
+      }
+      /* footer */
+      footer { flex-wrap: wrap; gap: 0.75rem; }
+      @media (max-width: 480px) {
+        footer {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.6rem;
+          padding: 1.5rem max(1.25rem, 4vw);
+        }
+        footer div { flex-wrap: wrap; gap: 0.9rem; }
+      }
       @media (max-width: 768px) {
         .skills-grid2 {
           grid-template-columns: 1fr;
@@ -470,7 +487,15 @@
       <a href="{% url 'home' %}" class="nav-logo"
         >{{ profile.first_name }}<span class="dot">.</span>{{ profile.last_name }}</a
       >
-      <div class="nav-links" style="display: flex">
+      <button
+        class="nav-hbg"
+        id="hbg"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
         <a href="{% url 'home' %}" class="nav-link">Home</a>
         <a href="{% url 'about' %}" class="nav-link">About</a>
         <a href="{% url 'contact' %}" class="nav-link nav-cta">Hire Me</a>
@@ -625,6 +650,12 @@
       </div>
     </footer>
     <script>
+      /* hamburger */
+      const hbg=document.getElementById('hbg'),nl=document.getElementById('nav-links');
+      if(hbg){
+        hbg.addEventListener('click',()=>{const o=nl.classList.toggle('open');hbg.classList.toggle('open',o);hbg.setAttribute('aria-expanded',o)});
+        document.addEventListener('click',e=>{if(!document.querySelector('.nav').contains(e.target)){nl.classList.remove('open');hbg.classList.remove('open');hbg.setAttribute('aria-expanded',false)}});
+      }
       const obs = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {
