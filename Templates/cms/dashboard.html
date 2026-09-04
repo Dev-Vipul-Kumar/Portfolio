@@ -1,0 +1,1999 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>CMS - Vipul Kumar</title>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
+    <style>
+      /* ── Layout ── */
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: var(--bg-base);
+      }
+      .cms-wrap {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      /* ── Sidebar ── */
+      .sidebar {
+        width: 230px;
+        flex-shrink: 0;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--b1);
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .sb-logo {
+        padding: 1.4rem 1.25rem 1rem;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--t1);
+        letter-spacing: -0.01em;
+        border-bottom: 1px solid var(--b1);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .sb-logo .dot {
+        color: var(--cyan);
+        text-shadow: 0 0 8px var(--cyan);
+      }
+      .sb-label {
+        padding: 0.6rem 1.25rem 0.3rem;
+        font-family: "Fira Code", monospace;
+        font-size: 0.6rem;
+        color: var(--t3);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+      .sb-nav {
+        list-style: none;
+        padding: 0 0.65rem;
+        margin: 0;
+      }
+      .sb-nav li {
+        margin-bottom: 0.15rem;
+      }
+      .sb-nav a {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.6rem 0.85rem;
+        border-radius: var(--r-sm);
+        font-size: 0.83rem;
+        font-weight: 500;
+        color: var(--t2);
+        text-decoration: none;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        position: relative;
+      }
+      .sb-nav a:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--t1);
+      }
+      .sb-nav a.active {
+        background: var(--cyan-dim);
+        color: var(--cyan);
+        border: 1px solid rgba(0, 212, 255, 0.18);
+      }
+      .sb-nav .icon {
+        width: 16px;
+        text-align: center;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+      .sb-badge {
+        margin-left: auto;
+        background: var(--red-dim);
+        color: var(--red);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        font-family: "Fira Code", monospace;
+        font-size: 0.6rem;
+        padding: 0.1rem 0.4rem;
+        border-radius: var(--r-pill);
+      }
+      .sb-footer {
+        margin-top: auto;
+        padding: 1rem 1.25rem;
+        border-top: 1px solid var(--b1);
+      }
+      .sb-footer a {
+        font-size: 0.78rem;
+        color: var(--t3);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .sb-footer a:hover {
+        color: var(--red);
+      }
+
+      /* ── Main content ── */
+      .cms-main {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem 2.5rem;
+        min-width: 0;
+      }
+
+      /* ── Top bar ── */
+      .cms-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--b1);
+      }
+      .cms-topbar h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--t1);
+        letter-spacing: -0.02em;
+      }
+      .cms-topbar .view-link {
+        font-size: 0.8rem;
+        color: var(--cyan);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        border-radius: var(--r-sm);
+        padding: 0.35rem 0.85rem;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
+      }
+      .cms-topbar .view-link:hover {
+        background: var(--cyan-dim);
+        box-shadow: var(--cyan-glow-sm);
+      }
+
+      /* ── Alerts ── */
+      .cms-alert {
+        padding: 0.8rem 1.1rem;
+        border-radius: var(--r);
+        margin-bottom: 1.25rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+      .cms-alert.ok {
+        background: var(--emerald-dim);
+        border: 1px solid rgba(16, 217, 160, 0.3);
+        color: var(--emerald);
+      }
+      .cms-alert.err {
+        background: var(--red-dim);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        color: var(--red);
+      }
+
+      /* ── Cards ── */
+      .cms-card {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-lg);
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--sh-card);
+      }
+      .cms-card h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--t1);
+        margin-bottom: 1.4rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--b1);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .cms-card h2 .ico {
+        font-size: 1rem;
+      }
+
+      /* ── Form grid ── */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1.5rem;
+      }
+      .form-grid .f-group {
+        margin-bottom: 1rem;
+      }
+      .form-grid .span2 {
+        grid-column: 1/-1;
+      }
+      .f-group {
+        margin-bottom: 1rem;
+      }
+
+      /* ── Save button ── */
+      .cms-save {
+        background: linear-gradient(135deg, var(--cyan-dark), var(--cyan-mid));
+        border: none;
+        border-radius: var(--r);
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 0.65rem 1.6rem;
+        cursor: pointer;
+        letter-spacing: 0.02em;
+        box-shadow: 0 4px 16px rgba(0, 212, 255, 0.2);
+        transition:
+          background 0.2s,
+          box-shadow 0.2s,
+          transform 0.15s;
+      }
+      .cms-save:hover {
+        background: linear-gradient(135deg, var(--cyan-mid), var(--cyan));
+        box-shadow: var(--cyan-glow);
+        transform: translateY(-1px);
+      }
+
+      /* ── List items ── */
+      .item-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        margin-bottom: 1.5rem;
+      }
+      .item-row {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        background: var(--bg-overlay);
+        border: 1px solid var(--b1);
+        border-radius: var(--r);
+        padding: 0.8rem 1rem;
+        transition: border-color 0.2s;
+      }
+      .item-row:hover {
+        border-color: rgba(0, 212, 255, 0.18);
+      }
+      .item-row .ir-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .item-row .ir-title {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--t1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .item-row .ir-sub {
+        font-family: "Fira Code", monospace;
+        font-size: 0.68rem;
+        color: var(--t3);
+        margin-top: 0.1rem;
+      }
+      .item-row .ir-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+      .btn-edit {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.3rem 0.75rem;
+        border-radius: var(--r-sm);
+        border: 1px solid rgba(0, 212, 255, 0.25);
+        background: var(--cyan-dim);
+        color: var(--cyan);
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
+      }
+      .btn-edit:hover {
+        background: rgba(0, 212, 255, 0.18);
+        box-shadow: var(--cyan-glow-sm);
+      }
+      .btn-del {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.3rem 0.75rem;
+        border-radius: var(--r-sm);
+        border: 1px solid rgba(248, 113, 113, 0.2);
+        background: var(--red-dim);
+        color: var(--red);
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .btn-del:hover {
+        background: rgba(248, 113, 113, 0.18);
+      }
+
+      /* ── Add form collapsible ── */
+      .add-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: var(--cyan);
+        background: var(--cyan-dim);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        border-radius: var(--r-sm);
+        padding: 0.5rem 1.1rem;
+        cursor: pointer;
+        transition: background 0.15s;
+        margin-bottom: 1rem;
+      }
+      .add-toggle:hover {
+        background: rgba(0, 212, 255, 0.14);
+      }
+      .add-form-wrap {
+        display: none;
+        background: var(--bg-overlay);
+        border: 1px solid var(--b1);
+        border-radius: var(--r);
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+      }
+      .add-form-wrap.open {
+        display: block;
+      }
+
+      /* ── Edit modal overlay ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(6px);
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-box {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-xl);
+        padding: 2rem;
+        width: 100%;
+        max-width: 620px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: var(--sh-lg);
+      }
+      .modal-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--cyan),
+          var(--violet),
+          transparent
+        );
+      }
+      .modal-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--t1);
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--b1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        color: var(--t3);
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: color 0.15s;
+        padding: 0.2rem;
+      }
+      .modal-close:hover {
+        color: var(--red);
+      }
+
+      /* ── Messages table ── */
+      .msg-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.83rem;
+      }
+      .msg-table th {
+        font-family: "Fira Code", monospace;
+        font-size: 0.65rem;
+        color: var(--t3);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 0.65rem 0.9rem;
+        border-bottom: 1px solid var(--b1);
+        text-align: left;
+      }
+      .msg-table td {
+        padding: 0.75rem 0.9rem;
+        border-bottom: 1px solid var(--b1);
+        color: var(--t2);
+        vertical-align: top;
+      }
+      .msg-table tr:last-child td {
+        border-bottom: none;
+      }
+      .msg-table tr.unread td {
+        color: var(--t1);
+        background: rgba(0, 212, 255, 0.025);
+      }
+      .msg-table .msg-txt {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .msg-table .badge-unread {
+        font-family: "Fira Code", monospace;
+        font-size: 0.62rem;
+        background: var(--cyan-dim);
+        color: var(--cyan);
+        border: 1px solid rgba(0, 212, 255, 0.25);
+        padding: 0.1rem 0.4rem;
+        border-radius: var(--r-pill);
+      }
+      .msg-expand {
+        background: none;
+        border: none;
+        color: var(--cyan);
+        cursor: pointer;
+        font-size: 0.78rem;
+        text-decoration: underline;
+      }
+
+      /* ── Skill bar preview ── */
+      .skill-preview-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--b1);
+        margin-top: 0.35rem;
+        overflow: hidden;
+      }
+      .skill-preview-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--cyan-mid), var(--cyan));
+        border-radius: 2px;
+      }
+
+      /* ── Stats bar ── */
+      .stat-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-lg);
+        padding: 1.1rem 1.25rem;
+        box-shadow: var(--sh-card);
+      }
+      .stat-card .s-num {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: var(--cyan);
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+      .stat-card .s-lbl {
+        font-size: 0.72rem;
+        color: var(--t3);
+        margin-top: 0.2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        .sidebar {
+          display: none;
+        }
+        .cms-main {
+          padding: 1.25rem;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .stat-bar {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+      <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml" />
+  </head>
+  <body>
+    <div class="cms-wrap">
+      <!-- ══ SIDEBAR ══ -->
+      <aside class="sidebar">
+        <div class="sb-logo">
+          <span>Vipul<span class="dot">.</span>CMS</span>
+        </div>
+
+        <div class="sb-label">Content</div>
+        <ul class="sb-nav">
+          <li>
+            <a
+              href="?section=profile"
+              class="{% if section == 'profile' %}active{% endif %}"
+              ><span class="icon">👤</span> Profile</a
+            >
+          </li>
+          <li>
+            <a
+              href="?section=roles"
+              class="{% if section == 'roles' %}active{% endif %}"
+              ><span class="icon">✍️</span> Typed Roles</a
+            >
+          </li>
+          <li>
+            <a
+              href="?section=skills"
+              class="{% if section == 'skills' %}active{% endif %}"
+              ><span class="icon">⚡</span> Skills</a
+            >
+          </li>
+          <li>
+            <a
+              href="?section=projects"
+              class="{% if section == 'projects' %}active{% endif %}"
+              ><span class="icon">🚀</span> Projects</a
+            >
+          </li>
+          <li>
+            <a
+              href="?section=experience"
+              class="{% if section == 'experience' %}active{% endif %}"
+              ><span class="icon">💼</span> Experience</a
+            >
+          </li>
+          <li>
+            <a
+              href="?section=certs"
+              class="{% if section == 'certs' %}active{% endif %}"
+              ><span class="icon">🏆</span> Certifications</a
+            >
+          </li>
+          <li>
+            <a
+              href="?section=faqs"
+              class="{% if section == 'faqs' %}active{% endif %}"
+              ><span class="icon">❓</span> FAQ Items</a
+            >
+          </li>
+        </ul>
+
+        <div class="sb-label">Files</div>
+        <ul class="sb-nav">
+          <li>
+            <a
+              href="?section=resume"
+              class="{% if section == 'resume' %}active{% endif %}"
+              ><span class="icon">📄</span> Resume PDF</a
+            >
+          </li>
+        </ul>
+
+        <div class="sb-label">Inbox</div>
+        <ul class="sb-nav">
+          <li>
+            <a
+              href="?section=messages"
+              class="{% if section == 'messages' %}active{% endif %}"
+            >
+              <span class="icon">✉️</span> Messages {% if unread %}<span
+                class="sb-badge"
+                >{{ unread }}</span
+              >{% endif %}
+            </a>
+          </li>
+        </ul>
+
+        <div class="sb-footer">
+          <a href="{% url 'home' %}" target="_blank">↗ View site</a>
+          &nbsp;·&nbsp;
+          <a href="{% url 'cms_logout' %}">Logout</a>
+        </div>
+      </aside>
+
+      <!-- ══ MAIN ══ -->
+      <main class="cms-main">
+        <!-- top bar -->
+        <div class="cms-topbar">
+          <h1>
+            {% if section == 'profile' %}Profile
+            {% elif section == 'roles' %}Typed Roles
+            {% elif section == 'skills' %}Skills
+            {% elif section == 'projects' %}Projects
+            {% elif section == 'experience' %}Experience
+            {% elif section == 'certs' %}Certifications
+            {% elif section == 'faqs' %}FAQ Items
+            {% elif section == 'messages' %}Messages
+            {% elif section == 'resume' %}Resume PDF
+            {% else %}Dashboard
+            {% endif %}
+          </h1>
+          <a href="{% url 'home' %}" target="_blank" class="view-link"
+            >↗ View live site</a
+          >
+        </div>
+
+        <!-- alerts -->
+        {% if messages %} {% for m in messages %}
+        <div
+          class="cms-alert {% if 'error' in m.tags %}err{% else %}ok{% endif %}"
+        >
+          {{ m }}
+        </div>
+        {% endfor %} {% endif %}
+
+        <!-- ════════════════════════════════════════════════
+         PROFILE
+    ════════════════════════════════════════════════ -->
+        {% if section == 'profile' %}
+
+        <!-- stat overview -->
+        <div class="stat-bar">
+          <div class="stat-card">
+            <div class="s-num">{{ projects|length }}</div>
+            <div class="s-lbl">Projects</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-num">{{ exp|length }}</div>
+            <div class="s-lbl">Experiences</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-num">{{ skills|length }}</div>
+            <div class="s-lbl">Skills</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-num">{{ unread }}</div>
+            <div class="s-lbl">Unread msgs</div>
+          </div>
+        </div>
+
+        <div class="cms-card">
+          <h2><span class="ico">👤</span> Identity &amp; Hero</h2>
+          <form method="post" action="{% url 'cms_profile' %}">
+            {% csrf_token %}
+            <div class="form-grid">
+              <div class="f-group">
+                <label class="f-label">First Name</label>
+                <input
+                  name="first_name"
+                  class="f-input"
+                  value="{{ profile.first_name }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">Last Name</label>
+                <input
+                  name="last_name"
+                  class="f-input"
+                  value="{{ profile.last_name }}"
+                />
+              </div>
+              <div class="f-group span2">
+                <label class="f-label">Tagline (about subtitle)</label>
+                <input
+                  name="tagline"
+                  class="f-input"
+                  value="{{ profile.tagline }}"
+                />
+              </div>
+              <div class="f-group span2">
+                <label class="f-label">Hero Description</label>
+                <textarea name="hero_description" class="f-textarea" rows="3">
+{{ profile.hero_description }}</textarea
+                >
+              </div>
+              <div class="f-group span2">
+                <label class="f-label">About Bio - Paragraph 1</label>
+                <textarea name="about_bio_1" class="f-textarea" rows="3">
+{{ profile.about_bio_1 }}</textarea
+                >
+              </div>
+              <div class="f-group span2">
+                <label class="f-label">About Bio - Paragraph 2</label>
+                <textarea name="about_bio_2" class="f-textarea" rows="3">
+{{ profile.about_bio_2 }}</textarea
+                >
+              </div>
+              <div class="f-group span2">
+                <label class="f-label">About Bio - Paragraph 3</label>
+                <textarea name="about_bio_3" class="f-textarea" rows="3">
+{{ profile.about_bio_3 }}</textarea
+                >
+              </div>
+            </div>
+
+            <h2 style="margin-top: 1.5rem">
+              <span class="ico">📊</span> Hero Stats
+            </h2>
+            <div class="form-grid">
+              <div class="f-group">
+                <label class="f-label">Projects stat</label
+                ><input
+                  name="stat_projects"
+                  class="f-input"
+                  value="{{ profile.stat_projects }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">Internships stat</label
+                ><input
+                  name="stat_internships"
+                  class="f-input"
+                  value="{{ profile.stat_internships }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">Technologies stat</label
+                ><input
+                  name="stat_technologies"
+                  class="f-input"
+                  value="{{ profile.stat_technologies }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">Experience stat</label
+                ><input
+                  name="stat_experience"
+                  class="f-input"
+                  value="{{ profile.stat_experience }}"
+                />
+              </div>
+            </div>
+
+            <h2 style="margin-top: 1.5rem">
+              <span class="ico">📬</span> Contact &amp; Links
+            </h2>
+            <div class="form-grid">
+              <div class="f-group">
+                <label class="f-label">Email</label
+                ><input
+                  name="email"
+                  type="email"
+                  class="f-input"
+                  value="{{ profile.email }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">Location</label
+                ><input
+                  name="location"
+                  class="f-input"
+                  value="{{ profile.location }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">Education</label
+                ><input
+                  name="education"
+                  class="f-input"
+                  value="{{ profile.education }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">Languages</label
+                ><input
+                  name="languages"
+                  class="f-input"
+                  value="{{ profile.languages }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">GitHub URL</label
+                ><input
+                  name="github_url"
+                  type="url"
+                  class="f-input"
+                  value="{{ profile.github_url }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">GitHub Handle</label
+                ><input
+                  name="github_handle"
+                  class="f-input"
+                  value="{{ profile.github_handle }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">LinkedIn URL</label
+                ><input
+                  name="linkedin_url"
+                  type="url"
+                  class="f-input"
+                  value="{{ profile.linkedin_url }}"
+                />
+              </div>
+              <div class="f-group">
+                <label class="f-label">LinkedIn Handle</label
+                ><input
+                  name="linkedin_handle"
+                  class="f-input"
+                  value="{{ profile.linkedin_handle }}"
+                />
+              </div>
+            </div>
+
+            <h2 style="margin-top: 1.5rem"><span class="ico">⚙️</span> Misc</h2>
+            <div class="form-grid">
+              <div class="f-group span2">
+                <label class="f-label">Footer copyright line</label
+                ><input
+                  name="footer_copy"
+                  class="f-input"
+                  value="{{ profile.footer_copy }}"
+                />
+              </div>
+              <div class="f-group span2">
+                <label class="f-label">Resume box note</label
+                ><input
+                  name="resume_note"
+                  class="f-input"
+                  value="{{ profile.resume_note }}"
+                />
+              </div>
+              <div class="f-group">
+                <label
+                  class="f-label"
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    cursor: pointer;
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    name="is_available"
+                    class="f-checkbox"
+                    {% if profile.is_available %}checked{% endif %}
+                  />
+                  Show "Available" badge
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="cms-save">Save Profile</button>
+          </form>
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         TYPED ROLES
+    ════════════════════════════════════════════════ -->
+        {% elif section == 'roles' %}
+        <div class="cms-card">
+          <h2><span class="ico">✍️</span> Typing Animation Roles</h2>
+
+          <div class="item-list">
+            {% for r in roles %}
+            <div class="item-row">
+              <div class="ir-info">
+                <div class="ir-title">{{ r.label }}</div>
+                <div class="ir-sub">order: {{ r.order }}</div>
+              </div>
+              <div class="ir-actions">
+                <button
+                  class="btn-edit"
+                  onclick="openEditModal('role','{{ r.pk }}','{{ r.label|escapejs }}','{{ r.order }}')"
+                >
+                  Edit
+                </button>
+                <form
+                  method="post"
+                  action="{% url 'cms_roles' %}"
+                  style="display: inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="_action" value="delete" />
+                  <input type="hidden" name="pk" value="{{ r.pk }}" />
+                  <button
+                    type="submit"
+                    class="btn-del"
+                    onclick="return confirm('Delete this role?');"
+                  >
+                    Del
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% empty %}
+            <p style="color: var(--t3); font-size: 0.85rem">No roles yet.</p>
+            {% endfor %}
+          </div>
+
+          <button class="add-toggle" onclick="toggleAdd('roles-add')">
+            + Add Role
+          </button>
+          <div class="add-form-wrap" id="roles-add">
+            <form method="post" action="{% url 'cms_roles' %}">
+              {% csrf_token %}
+              <div class="form-grid">
+                <div class="f-group">
+                  <label class="f-label">Label</label
+                  ><input
+                    name="label"
+                    class="f-input"
+                    placeholder="e.g. Django Developer"
+                  />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Order</label
+                  ><input
+                    name="order"
+                    type="number"
+                    class="f-input"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="cms-save">Add</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         SKILLS
+    ════════════════════════════════════════════════ -->
+        {% elif section == 'skills' %}
+        <div class="cms-card">
+          <h2><span class="ico">⚡</span> Skills</h2>
+          <div class="item-list">
+            {% for s in skills %}
+            <div class="item-row">
+              <div class="ir-info">
+                <div class="ir-title">{{ s.name }}</div>
+                <div class="skill-preview-bar">
+                  <div
+                    class="skill-preview-fill"
+                    style="width:{{ s.percentage }}%"
+                  ></div>
+                </div>
+                <div class="ir-sub">
+                  {{ s.percentage }}% · order {{ s.order }}
+                </div>
+              </div>
+              <div class="ir-actions">
+                <button
+                  class="btn-edit"
+                  onclick="openSkillModal({{ s.pk }},'{{ s.name|escapejs }}',{{ s.percentage }},{{ s.order }})"
+                >
+                  Edit
+                </button>
+                <form
+                  method="post"
+                  action="{% url 'cms_skills' %}"
+                  style="display: inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="_action" value="delete" />
+                  <input type="hidden" name="pk" value="{{ s.pk }}" />
+                  <button
+                    type="submit"
+                    class="btn-del"
+                    onclick="return confirm('Delete this skill?');"
+                  >
+                    Del
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% empty %}
+            <p style="color: var(--t3); font-size: 0.85rem">No skills yet.</p>
+            {% endfor %}
+          </div>
+          <button class="add-toggle" onclick="toggleAdd('skills-add')">
+            + Add Skill
+          </button>
+          <div class="add-form-wrap" id="skills-add">
+            <form method="post" action="{% url 'cms_skills' %}">
+              {% csrf_token %}
+              <div class="form-grid">
+                <div class="f-group">
+                  <label class="f-label">Name</label
+                  ><input
+                    name="name"
+                    class="f-input"
+                    placeholder="e.g. Python"
+                  />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Percentage (0-100)</label
+                  ><input
+                    name="percentage"
+                    type="number"
+                    class="f-input"
+                    min="0"
+                    max="100"
+                    value="80"
+                  />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Order</label
+                  ><input
+                    name="order"
+                    type="number"
+                    class="f-input"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="cms-save">Add</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         PROJECTS
+    ════════════════════════════════════════════════ -->
+        {% elif section == 'projects' %}
+        <div class="cms-card">
+          <h2><span class="ico">🚀</span> Projects</h2>
+          <div class="item-list">
+            {% for p in projects %}
+            <div class="item-row">
+              <div class="ir-info">
+                <div class="ir-title">
+                  {{ p.icon }} {{ p.name }}
+                  <span
+                    style="font-size:.68rem;margin-left:.4rem;
+                {% if p.status == 'live' %}color:var(--emerald){% else %}color:var(--amber){% endif %}"
+                  >
+                    ● {{ p.get_status_display }}
+                  </span>
+                </div>
+                <div class="ir-sub">{{ p.tags|truncatechars:60 }}</div>
+              </div>
+              <div class="ir-actions">
+                <button class="btn-edit" onclick="openProjectModal({{ p.pk }})">
+                  Edit
+                </button>
+                <form
+                  method="post"
+                  action="{% url 'cms_projects' %}"
+                  style="display: inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="_action" value="delete" />
+                  <input type="hidden" name="pk" value="{{ p.pk }}" />
+                  <button
+                    type="submit"
+                    class="btn-del"
+                    onclick="return confirm('Delete this project?');"
+                  >
+                    Del
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% empty %}
+            <p style="color: var(--t3); font-size: 0.85rem">No projects yet.</p>
+            {% endfor %}
+          </div>
+          <button class="add-toggle" onclick="toggleAdd('proj-add')">
+            + Add Project
+          </button>
+          <div class="add-form-wrap" id="proj-add">
+            <form method="post" action="{% url 'cms_projects' %}">
+              {% csrf_token %}
+              <div class="form-grid">
+                <div class="f-group">
+                  <label class="f-label">Name</label
+                  ><input name="name" class="f-input" />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Icon (emoji)</label
+                  ><input name="icon" class="f-input" value="💻" />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Status</label>
+                  <select name="status" class="f-input f-select">
+                    <option value="live">Live</option>
+                    <option value="wip" selected>In progress</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Order</label
+                  ><input
+                    name="order"
+                    type="number"
+                    class="f-input"
+                    value="0"
+                  />
+                </div>
+                <div class="f-group span2">
+                  <label class="f-label">Description</label
+                  ><textarea
+                    name="description"
+                    class="f-textarea"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Live URL</label
+                  ><input name="live_url" type="url" class="f-input" />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">GitHub URL</label
+                  ><input name="github_url" type="url" class="f-input" />
+                </div>
+                <div class="f-group span2">
+                  <label class="f-label">Tags (comma-separated)</label
+                  ><input
+                    name="tags"
+                    class="f-input"
+                    placeholder="Django, Python, SQLite3"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="cms-save">Add</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         EXPERIENCE
+    ════════════════════════════════════════════════ -->
+        {% elif section == 'experience' %}
+        <div class="cms-card">
+          <h2><span class="ico">💼</span> Experience</h2>
+          <div class="item-list">
+            {% for e in exp %}
+            <div class="item-row">
+              <div class="ir-info">
+                <div class="ir-title">{{ e.role }} @ {{ e.company }}</div>
+                <div class="ir-sub">{{ e.date_range }}</div>
+              </div>
+              <div class="ir-actions">
+                <button class="btn-edit" onclick="openExpModal({{ e.pk }})">
+                  Edit
+                </button>
+                <form
+                  method="post"
+                  action="{% url 'cms_experience' %}"
+                  style="display: inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="_action" value="delete" />
+                  <input type="hidden" name="pk" value="{{ e.pk }}" />
+                  <button
+                    type="submit"
+                    class="btn-del"
+                    onclick="return confirm('Delete?');"
+                  >
+                    Del
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% empty %}
+            <p style="color: var(--t3); font-size: 0.85rem">
+              No experience entries yet.
+            </p>
+            {% endfor %}
+          </div>
+          <button class="add-toggle" onclick="toggleAdd('exp-add')">
+            + Add Experience
+          </button>
+          <div class="add-form-wrap" id="exp-add">
+            <form method="post" action="{% url 'cms_experience' %}">
+              {% csrf_token %}
+              <div class="form-grid">
+                <div class="f-group">
+                  <label class="f-label">Role</label
+                  ><input name="role" class="f-input" />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Company</label
+                  ><input name="company" class="f-input" />
+                </div>
+                <div class="f-group span2">
+                  <label class="f-label">Date Range</label
+                  ><input
+                    name="date_range"
+                    class="f-input"
+                    placeholder="Jan 2025 - May 2025 · Delhi, India"
+                  />
+                </div>
+                <div class="f-group span2">
+                  <label class="f-label">Bullet Points (one per line)</label
+                  ><textarea
+                    name="bullets"
+                    class="f-textarea"
+                    rows="5"
+                  ></textarea>
+                </div>
+                <div class="f-group">
+                  <label
+                    class="f-label"
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 0.5rem;
+                      cursor: pointer;
+                    "
+                    ><input
+                      type="checkbox"
+                      name="is_fulltime"
+                      class="f-checkbox"
+                    />
+                    Full-time badge</label
+                  >
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Order</label
+                  ><input
+                    name="order"
+                    type="number"
+                    class="f-input"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="cms-save">Add</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         CERTIFICATIONS
+    ════════════════════════════════════════════════ -->
+        {% elif section == 'certs' %}
+        <div class="cms-card">
+          <h2><span class="ico">🏆</span> Certifications</h2>
+          <div class="item-list">
+            {% for c in certs %}
+            <div class="item-row">
+              <div class="ir-info">
+                <div class="ir-title">{{ c.icon }} {{ c.name }}</div>
+                <div class="ir-sub">{{ c.issuer }} · order {{ c.order }}</div>
+              </div>
+              <div class="ir-actions">
+                <button
+                  class="btn-edit"
+                  onclick="openCertModal({{ c.pk }},'{{ c.name|escapejs }}','{{ c.issuer|escapejs }}','{{ c.icon|escapejs }}',{{ c.order }})"
+                >
+                  Edit
+                </button>
+                <form
+                  method="post"
+                  action="{% url 'cms_certs' %}"
+                  style="display: inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="_action" value="delete" />
+                  <input type="hidden" name="pk" value="{{ c.pk }}" />
+                  <button
+                    type="submit"
+                    class="btn-del"
+                    onclick="return confirm('Delete?');"
+                  >
+                    Del
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% empty %}
+            <p style="color: var(--t3); font-size: 0.85rem">No certs yet.</p>
+            {% endfor %}
+          </div>
+          <button class="add-toggle" onclick="toggleAdd('cert-add')">
+            + Add Certification
+          </button>
+          <div class="add-form-wrap" id="cert-add">
+            <form method="post" action="{% url 'cms_certs' %}">
+              {% csrf_token %}
+              <div class="form-grid">
+                <div class="f-group">
+                  <label class="f-label">Name</label
+                  ><input name="name" class="f-input" />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Issuer</label
+                  ><input name="issuer" class="f-input" />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Icon (emoji)</label
+                  ><input name="icon" class="f-input" value="🏆" />
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Order</label
+                  ><input
+                    name="order"
+                    type="number"
+                    class="f-input"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="cms-save">Add</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         FAQ ITEMS
+    ════════════════════════════════════════════════ -->
+        {% elif section == 'faqs' %}
+        <div class="cms-card">
+          <h2><span class="ico">❓</span> FAQ Items</h2>
+          <div class="item-list">
+            {% for f in faqs %}
+            <div class="item-row">
+              <div class="ir-info">
+                <div class="ir-title">{{ f.question|truncatechars:70 }}</div>
+                <div class="ir-sub">{{ f.answer|truncatechars:80 }}</div>
+              </div>
+              <div class="ir-actions">
+                <button class="btn-edit" onclick="openFaqModal({{ f.pk }})">
+                  Edit
+                </button>
+                <form
+                  method="post"
+                  action="{% url 'cms_faqs' %}"
+                  style="display: inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="_action" value="delete" />
+                  <input type="hidden" name="pk" value="{{ f.pk }}" />
+                  <button
+                    type="submit"
+                    class="btn-del"
+                    onclick="return confirm('Delete?');"
+                  >
+                    Del
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% empty %}
+            <p style="color: var(--t3); font-size: 0.85rem">
+              No FAQ items yet.
+            </p>
+            {% endfor %}
+          </div>
+          <button class="add-toggle" onclick="toggleAdd('faq-add')">
+            + Add FAQ Item
+          </button>
+          <div class="add-form-wrap" id="faq-add">
+            <form method="post" action="{% url 'cms_faqs' %}">
+              {% csrf_token %}
+              <div class="form-grid">
+                <div class="f-group span2">
+                  <label class="f-label">Question</label
+                  ><input name="question" class="f-input" />
+                </div>
+                <div class="f-group span2">
+                  <label class="f-label">Answer</label
+                  ><textarea
+                    name="answer"
+                    class="f-textarea"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <div class="f-group">
+                  <label class="f-label">Order</label
+                  ><input
+                    name="order"
+                    type="number"
+                    class="f-input"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="cms-save">Add</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         MESSAGES
+    ════════════════════════════════════════════════ -->
+        {% elif section == 'messages' %}
+        <div class="cms-card">
+          <h2>
+            <span class="ico">✉️</span> Contact Messages {% if unread %}<span
+              style="
+                font-family: &quot;Fira Code&quot;, monospace;
+                font-size: 0.7rem;
+                color: var(--red);
+                margin-left: 0.5rem;
+              "
+              >{{ unread }} unread</span
+            >{% endif %}
+          </h2>
+          {% if messages_list %}
+          <table class="msg-table">
+            <thead>
+              <tr>
+                <th>From</th>
+                <th>Email</th>
+                <th>Message</th>
+                <th>Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for m in messages_list %}
+              <tr class="{% if not m.is_read %}unread{% endif %}">
+                <td>
+                  {{ m.name }} {% if not m.is_read %}<span class="badge-unread"
+                    >new</span
+                  >{% endif %}
+                </td>
+                <td>
+                  <a href="mailto:{{ m.email }}" style="color: var(--cyan)"
+                    >{{ m.email }}</a
+                  >
+                </td>
+                <td>
+                  <div class="msg-txt">{{ m.message }}</div>
+                  <button
+                    class="msg-expand"
+                    onclick="expandMsg(this,'{{ m.message|escapejs }}')"
+                  >
+                    expand
+                  </button>
+                </td>
+                <td
+                  style="
+                    white-space: nowrap;
+                    font-family: &quot;Fira Code&quot;, monospace;
+                    font-size: 0.72rem;
+                  "
+                >
+                  {{ m.submitted_at|date:"d M y H:i" }}
+                </td>
+                <td style="white-space: nowrap">
+                  {% if not m.is_read %}
+                  <form method="post" action="{% url 'cms_mark_read' %}" style="display:inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="pk" value="{{ m.pk }}" />
+                    <button type="submit" class="btn-edit" style="font-size:0.72rem">
+                      Mark read
+                    </button>
+                  </form>
+                  {% else %}
+                  <span style="color:var(--t3);font-size:0.75rem">&#10003; read</span>
+                  {% endif %}
+                  <form method="post" action="{% url 'cms_delete_message' %}" style="display:inline;margin-left:0.4rem">
+                    {% csrf_token %}
+                    <input type="hidden" name="pk" value="{{ m.pk }}" />
+                    <button
+                      type="submit"
+                      class="btn-del"
+                      style="font-size:0.72rem"
+                      onclick="return confirm('Delete this message?')"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p style="color: var(--t3); font-size: 0.88rem">No messages yet.</p>
+          {% endif %}
+        </div>
+
+        <!-- ════════════════════════════════════════════════
+         RESUME PDF
+        ════════════════════════════════════════════════ -->
+        {% elif section == 'resume' %}
+        <div class="cms-card">
+          <h2><span class="ico">📄</span> Resume PDF</h2>
+
+          <!-- current file info -->
+          <div style="
+            background: var(--bg-overlay);
+            border: 1px solid var(--b1);
+            border-radius: var(--r);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+          ">
+            <div>
+              <div style="font-size:0.88rem; font-weight:600; color:var(--t1);">
+                📎 Resume.pdf
+              </div>
+              <div style="font-family:var(--mono); font-size:0.68rem; color:var(--t3); margin-top:0.2rem;">
+                Served at /static/Resume.pdf
+              </div>
+            </div>
+            <a
+              href="{% static 'Resume.pdf' %}"
+              target="_blank"
+              rel="noopener"
+              class="btn-edit"
+              style="font-size:0.78rem; padding:0.35rem 0.9rem; text-decoration:none"
+            >
+              View current PDF
+            </a>
+          </div>
+
+          <!-- upload form -->
+          <form
+            method="post"
+            action="{% url 'cms_resume' %}"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="f-group">
+              <label class="f-label">Upload new Resume PDF</label>
+              <input
+                type="file"
+                name="resume_pdf"
+                accept=".pdf,application/pdf"
+                class="f-input"
+                style="padding: 0.45rem 0.75rem; cursor: pointer;"
+                required
+              />
+              <p style="font-family:var(--mono); font-size:0.67rem; color:var(--t3); margin-top:0.4rem;">
+                PDF only - max 10 MB. Replaces the existing Resume.pdf immediately.
+              </p>
+            </div>
+            <button type="submit" class="cms-save">Upload &amp; Replace</button>
+          </form>
+        </div>
+
+        {% endif %}
+      </main>
+    </div>
+
+    <!-- ══ EDIT MODALS ══ -->
+
+    <!-- Role edit -->
+    <div class="modal-overlay" id="modal-role">
+      <div class="modal-box">
+        <div class="modal-title">
+          Edit Role
+          <button class="modal-close" onclick="closeModal('modal-role')">
+            ✕
+          </button>
+        </div>
+        <form method="post" action="{% url 'cms_roles' %}">
+          {% csrf_token %}
+          <input type="hidden" name="pk" id="role-pk" />
+          <div class="f-group">
+            <label class="f-label">Label</label
+            ><input name="label" id="role-label" class="f-input" />
+          </div>
+          <div class="f-group">
+            <label class="f-label">Order</label
+            ><input
+              name="order"
+              id="role-order"
+              type="number"
+              class="f-input"
+            />
+          </div>
+          <button type="submit" class="cms-save">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Skill edit -->
+    <div class="modal-overlay" id="modal-skill">
+      <div class="modal-box">
+        <div class="modal-title">
+          Edit Skill
+          <button class="modal-close" onclick="closeModal('modal-skill')">
+            ✕
+          </button>
+        </div>
+        <form method="post" action="{% url 'cms_skills' %}">
+          {% csrf_token %}
+          <input type="hidden" name="pk" id="skill-pk" />
+          <div class="form-grid">
+            <div class="f-group">
+              <label class="f-label">Name</label
+              ><input name="name" id="skill-name" class="f-input" />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Percentage</label
+              ><input
+                name="percentage"
+                id="skill-pct"
+                type="number"
+                class="f-input"
+                min="0"
+                max="100"
+              />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Order</label
+              ><input
+                name="order"
+                id="skill-order"
+                type="number"
+                class="f-input"
+              />
+            </div>
+          </div>
+          <button type="submit" class="cms-save">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Project edit -->
+    <div class="modal-overlay" id="modal-project">
+      <div class="modal-box">
+        <div class="modal-title">
+          Edit Project
+          <button class="modal-close" onclick="closeModal('modal-project')">
+            ✕
+          </button>
+        </div>
+        <form
+          method="post"
+          action="{% url 'cms_projects' %}"
+          id="proj-edit-form"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="pk" id="proj-pk" />
+          <div class="form-grid">
+            <div class="f-group">
+              <label class="f-label">Name</label
+              ><input name="name" id="proj-name" class="f-input" />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Icon</label
+              ><input name="icon" id="proj-icon" class="f-input" />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Status</label>
+              <select name="status" id="proj-status" class="f-input f-select">
+                <option value="live">Live</option>
+                <option value="wip">In progress</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+            <div class="f-group">
+              <label class="f-label">Order</label
+              ><input
+                name="order"
+                id="proj-order"
+                type="number"
+                class="f-input"
+              />
+            </div>
+            <div class="f-group span2">
+              <label class="f-label">Description</label
+              ><textarea
+                name="description"
+                id="proj-desc"
+                class="f-textarea"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="f-group">
+              <label class="f-label">Live URL</label
+              ><input
+                name="live_url"
+                id="proj-live"
+                type="url"
+                class="f-input"
+              />
+            </div>
+            <div class="f-group">
+              <label class="f-label">GitHub URL</label
+              ><input
+                name="github_url"
+                id="proj-gh"
+                type="url"
+                class="f-input"
+              />
+            </div>
+            <div class="f-group span2">
+              <label class="f-label">Tags (comma-separated)</label
+              ><input name="tags" id="proj-tags" class="f-input" />
+            </div>
+          </div>
+          <button type="submit" class="cms-save">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Experience edit -->
+    <div class="modal-overlay" id="modal-exp">
+      <div class="modal-box">
+        <div class="modal-title">
+          Edit Experience
+          <button class="modal-close" onclick="closeModal('modal-exp')">
+            ✕
+          </button>
+        </div>
+        <form
+          method="post"
+          action="{% url 'cms_experience' %}"
+          id="exp-edit-form"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="pk" id="exp-pk" />
+          <div class="form-grid">
+            <div class="f-group">
+              <label class="f-label">Role</label
+              ><input name="role" id="exp-role" class="f-input" />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Company</label
+              ><input name="company" id="exp-company" class="f-input" />
+            </div>
+            <div class="f-group span2">
+              <label class="f-label">Date Range</label
+              ><input name="date_range" id="exp-date" class="f-input" />
+            </div>
+            <div class="f-group span2">
+              <label class="f-label">Bullets (one per line)</label
+              ><textarea
+                name="bullets"
+                id="exp-bullets"
+                class="f-textarea"
+                rows="5"
+              ></textarea>
+            </div>
+            <div class="f-group">
+              <label
+                class="f-label"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 0.5rem;
+                  cursor: pointer;
+                "
+                ><input
+                  type="checkbox"
+                  name="is_fulltime"
+                  id="exp-ft"
+                  class="f-checkbox"
+                />
+                Full-time</label
+              >
+            </div>
+            <div class="f-group">
+              <label class="f-label">Order</label
+              ><input
+                name="order"
+                id="exp-order"
+                type="number"
+                class="f-input"
+              />
+            </div>
+          </div>
+          <button type="submit" class="cms-save">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Cert edit -->
+    <div class="modal-overlay" id="modal-cert">
+      <div class="modal-box">
+        <div class="modal-title">
+          Edit Certification
+          <button class="modal-close" onclick="closeModal('modal-cert')">
+            ✕
+          </button>
+        </div>
+        <form method="post" action="{% url 'cms_certs' %}">
+          {% csrf_token %}
+          <input type="hidden" name="pk" id="cert-pk" />
+          <div class="form-grid">
+            <div class="f-group">
+              <label class="f-label">Name</label
+              ><input name="name" id="cert-name" class="f-input" />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Issuer</label
+              ><input name="issuer" id="cert-issuer" class="f-input" />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Icon</label
+              ><input name="icon" id="cert-icon" class="f-input" />
+            </div>
+            <div class="f-group">
+              <label class="f-label">Order</label
+              ><input
+                name="order"
+                id="cert-order"
+                type="number"
+                class="f-input"
+              />
+            </div>
+          </div>
+          <button type="submit" class="cms-save">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- FAQ edit -->
+    <div class="modal-overlay" id="modal-faq">
+      <div class="modal-box">
+        <div class="modal-title">
+          Edit FAQ Item
+          <button class="modal-close" onclick="closeModal('modal-faq')">
+            ✕
+          </button>
+        </div>
+        <form method="post" action="{% url 'cms_faqs' %}" id="faq-edit-form">
+          {% csrf_token %}
+          <input type="hidden" name="pk" id="faq-pk" />
+          <div class="f-group">
+            <label class="f-label">Question</label
+            ><input name="question" id="faq-q" class="f-input" />
+          </div>
+          <div class="f-group">
+            <label class="f-label">Answer</label
+            ><textarea
+              name="answer"
+              id="faq-a"
+              class="f-textarea"
+              rows="4"
+            ></textarea>
+          </div>
+          <div class="f-group">
+            <label class="f-label">Order</label
+            ><input name="order" id="faq-order" type="number" class="f-input" />
+          </div>
+          <button type="submit" class="cms-save">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Message expand modal -->
+    <div class="modal-overlay" id="modal-msg">
+      <div class="modal-box" style="max-width: 500px">
+        <div class="modal-title">
+          Message
+          <button class="modal-close" onclick="closeModal('modal-msg')">
+            ✕
+          </button>
+        </div>
+        <p
+          id="modal-msg-body"
+          style="
+            font-size: 0.9rem;
+            color: var(--t2);
+            line-height: 1.8;
+            white-space: pre-wrap;
+          "
+        ></p>
+      </div>
+    </div>
+
+    <!-- Inline data for project/exp/faq modals -->
+    <script>
+      /* ── Modal helpers ── */
+      function openModal(id){ document.getElementById(id).classList.add('open') }
+      function closeModal(id){ document.getElementById(id).classList.remove('open') }
+      document.querySelectorAll('.modal-overlay').forEach(m=>{
+        m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open') })
+      })
+
+      function toggleAdd(id){
+        const el=document.getElementById(id)
+        el.classList.toggle('open')
+      }
+
+      /* ── Role modal ── */
+      function openEditModal(type,pk,label,order){
+        document.getElementById('role-pk').value=pk
+        document.getElementById('role-label').value=label
+        document.getElementById('role-order').value=order
+        openModal('modal-role')
+      }
+
+      /* ── Skill modal ── */
+      function openSkillModal(pk,name,pct,order){
+        document.getElementById('skill-pk').value=pk
+        document.getElementById('skill-name').value=name
+        document.getElementById('skill-pct').value=pct
+        document.getElementById('skill-order').value=order
+        openModal('modal-skill')
+      }
+
+      /* ── Cert modal ── */
+      function openCertModal(pk,name,issuer,icon,order){
+        document.getElementById('cert-pk').value=pk
+        document.getElementById('cert-name').value=name
+        document.getElementById('cert-issuer').value=issuer
+        document.getElementById('cert-icon').value=icon
+        document.getElementById('cert-order').value=order
+        openModal('modal-cert')
+      }
+
+      /* ── Project modal - fetch data from hidden JSON ── */
+      const _projects = {{ projects_json|safe }};
+      function openProjectModal(pk){
+        const p=_projects.find(x=>x.pk==pk); if(!p) return
+        document.getElementById('proj-pk').value=pk
+        document.getElementById('proj-name').value=p.name
+        document.getElementById('proj-icon').value=p.icon
+        document.getElementById('proj-status').value=p.status
+        document.getElementById('proj-order').value=p.order
+        document.getElementById('proj-desc').value=p.description
+        document.getElementById('proj-live').value=p.live_url
+        document.getElementById('proj-gh').value=p.github_url
+        document.getElementById('proj-tags').value=p.tags
+        openModal('modal-project')
+      }
+
+      /* ── Experience modal ── */
+      const _exp = {{ exp_json|safe }};
+      function openExpModal(pk){
+        const e=_exp.find(x=>x.pk==pk); if(!e) return
+        document.getElementById('exp-pk').value=pk
+        document.getElementById('exp-role').value=e.role
+        document.getElementById('exp-company').value=e.company
+        document.getElementById('exp-date').value=e.date_range
+        document.getElementById('exp-bullets').value=e.bullets
+        document.getElementById('exp-ft').checked=e.is_fulltime
+        document.getElementById('exp-order').value=e.order
+        openModal('modal-exp')
+      }
+
+      /* ── FAQ modal ── */
+      const _faqs = {{ faqs_json|safe }};
+      function openFaqModal(pk){
+        const f=_faqs.find(x=>x.pk==pk); if(!f) return
+        document.getElementById('faq-pk').value=pk
+        document.getElementById('faq-q').value=f.question
+        document.getElementById('faq-a').value=f.answer
+        document.getElementById('faq-order').value=f.order
+        openModal('modal-faq')
+      }
+
+      /* ── Message expand ── */
+      function expandMsg(btn,txt){
+        document.getElementById('modal-msg-body').textContent=txt
+        openModal('modal-msg')
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,398 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>About - {{ profile.full_name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
+    <style>
+      body {
+        padding-top: 64px;
+      }
+      .profile-layout {
+        display: grid;
+        grid-template-columns: 288px 1fr;
+        gap: 2.8rem;
+        align-items: start;
+      }
+      .profile-card {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-xl);
+        padding: 2rem 1.75rem;
+        text-align: center;
+        box-shadow: var(--sh-card);
+        position: sticky;
+        top: 84px;
+        overflow: hidden;
+      }
+      .profile-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--cyan),
+          var(--violet),
+          transparent
+        );
+      }
+      .avatar {
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--cyan-dark),
+          var(--cyan),
+          var(--violet)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #fff;
+        margin: 0 auto 1.1rem;
+        box-shadow:
+          0 0 0 3px var(--bg-card),
+          0 0 0 5px rgba(0, 212, 255, 0.25),
+          var(--cyan-glow-sm);
+        letter-spacing: -0.03em;
+      }
+      .profile-name {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--t1);
+        margin-bottom: 0.2rem;
+        letter-spacing: -0.01em;
+      }
+      .profile-role {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--cyan);
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.04em;
+      }
+      .profile-divider {
+        height: 1px;
+        background: var(--b1);
+        margin-bottom: 1.25rem;
+      }
+      .profile-meta {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+      }
+      .profile-meta li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--b1);
+        font-size: 0.83rem;
+        color: var(--t2);
+      }
+      .profile-meta li:last-child {
+        border-bottom: none;
+      }
+      .pm-key {
+        font-family: var(--mono);
+        font-weight: 500;
+        color: var(--t3);
+        font-size: 0.67rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        min-width: 68px;
+        padding-top: 0.1rem;
+        flex-shrink: 0;
+      }
+      .pm-val a {
+        color: var(--cyan);
+        transition:
+          color 0.2s,
+          text-shadow 0.2s;
+      }
+      .pm-val a:hover {
+        color: var(--t1);
+        text-shadow: 0 0 8px var(--cyan);
+      }
+      .avail-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1.15rem 0 0;
+        padding: 0.4rem 1rem;
+        background: var(--emerald-dim);
+        border: 1px solid rgba(16, 217, 160, 0.25);
+        border-radius: var(--r-pill);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--emerald);
+        letter-spacing: 0.02em;
+      }
+      .profile-actions {
+        margin-top: 1.1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+      .profile-actions .btn {
+        justify-content: center;
+        font-size: 0.83rem;
+      }
+      .bio-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+      }
+      .bio-section {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-lg);
+        padding: 1.75rem 2rem;
+        box-shadow: var(--sh-card);
+        transition: border-color 0.25s;
+      }
+      .bio-section:hover {
+        border-color: rgba(0, 212, 255, 0.15);
+      }
+      .bio-section h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--t1);
+        margin-bottom: 1rem;
+        padding-bottom: 0.65rem;
+        border-bottom: 1px solid var(--b1);
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+      }
+      .bio-section h3::before {
+        content: "";
+        display: inline-block;
+        width: 14px;
+        height: 2px;
+        background: var(--cyan);
+        border-radius: 1px;
+        box-shadow: 0 0 6px var(--cyan);
+      }
+      .bio-section p {
+        font-size: 0.92rem;
+        color: var(--t2);
+        line-height: 1.9;
+        margin-bottom: 0.85rem;
+      }
+      .bio-section p:last-of-type {
+        margin-bottom: 0;
+      }
+      .bio-section p strong {
+        color: var(--t1);
+        font-weight: 600;
+      }
+      .bio-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.9rem;
+      }
+      .about-skills {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.1rem 2.8rem;
+      }
+      .skill-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+      .skill-name {
+        font-size: 0.87rem;
+        font-weight: 600;
+        color: var(--t1);
+      }
+      .skill-pct {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--cyan);
+        opacity: 0;
+        transition: opacity 0.4s 1s;
+      }
+      .skill-pct.show {
+        opacity: 1;
+      }
+      @media (max-width: 820px) {
+        .profile-layout {
+          grid-template-columns: 1fr;
+        }
+        .profile-card {
+          position: static;
+        }
+        .about-skills {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+      <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml" />
+  </head>
+  <body>
+    <nav class="nav scrolled" style="position: sticky; top: 0">
+      <a href="{% url 'home' %}" class="nav-logo"
+        >{{ profile.first_name }}<span class="dot">.</span>{{ profile.last_name }}</a
+      >
+      <div class="nav-links" style="display: flex">
+        <a href="{% url 'home' %}" class="nav-link">Home</a>
+        <a href="{% url 'Main' %}" class="nav-link">Portfolio</a>
+        <a href="{% url 'contact' %}" class="nav-link">Contact</a>
+        <a href="{% url 'faq' %}" class="nav-link">FAQ</a>
+      </div>
+    </nav>
+    <div class="page-hero">
+      <p class="page-hero-label">About</p>
+      <h1>About Me</h1>
+      <p>Developer, student, and builder. Here's a bit more about who I am.</p>
+    </div>
+    <section class="section">
+      <div class="profile-layout">
+        <div class="profile-card sr-l">
+          <div class="avatar">
+            {{ profile.first_name|slice:":1" }}{{ profile.last_name|slice:":1" }}
+          </div>
+          <div class="profile-name">{{ profile.full_name }}</div>
+          <div class="profile-role">software_developer()</div>
+          <div class="profile-divider"></div>
+          <ul class="profile-meta">
+            <li>
+              <span class="pm-key">Location</span
+              ><span class="pm-val">{{ profile.location }}</span>
+            </li>
+            <li>
+              <span class="pm-key">Edu</span
+              ><span class="pm-val">{{ profile.education }}</span>
+            </li>
+            <li>
+              <span class="pm-key">Email</span
+              ><span class="pm-val"
+                ><a href="mailto:{{ profile.email }}"
+                  >{{ profile.email|truncatechars:22 }}</a
+                ></span
+              >
+            </li>
+            <li>
+              <span class="pm-key">GitHub</span
+              ><span class="pm-val"
+                ><a
+                  href="{{ profile.github_url }}"
+                  target="_blank"
+                  rel="noopener"
+                  >{{ profile.github_handle }}</a
+                ></span
+              >
+            </li>
+            <li>
+              <span class="pm-key">LinkedIn</span
+              ><span class="pm-val"
+                ><a
+                  href="{{ profile.linkedin_url }}"
+                  target="_blank"
+                  rel="noopener"
+                  >{{ profile.linkedin_handle }}</a
+                ></span
+              >
+            </li>
+            <li>
+              <span class="pm-key">Lang</span
+              ><span class="pm-val">{{ profile.languages }}</span>
+            </li>
+          </ul>
+          {% if profile.is_available %}
+          <div class="avail-badge">
+            <span class="avail-dot"></span>Open to work
+          </div>
+          {% endif %}
+          <div class="profile-actions">
+            <a href="{% static 'Resume.pdf' %}" class="btn btn-primary" download
+              >↓ Download CV</a
+            >
+            <a href="{% url 'contact' %}" class="btn btn-outline">Contact me</a>
+          </div>
+        </div>
+        <div class="bio-content">
+          <div class="bio-section sr">
+            <h3>Who I am</h3>
+            {% if profile.about_bio_1 %}
+            <p>{{ profile.about_bio_1|safe }}</p>
+            {% endif %} {% if profile.about_bio_2 %}
+            <p>{{ profile.about_bio_2|safe }}</p>
+            {% endif %} {% if profile.about_bio_3 %}
+            <p>{{ profile.about_bio_3|safe }}</p>
+            {% endif %}
+          </div>
+          <div class="bio-section sr d1">
+            <h3>Skills</h3>
+            <div class="about-skills">
+              {% for s in skills %}
+              <div class="skill-row">
+                <div class="skill-meta">
+                  <span class="skill-name">{{ s.name }}</span
+                  ><span class="skill-pct">{{ s.percentage }}%</span>
+                </div>
+                <div class="skill-bar-track">
+                  <div class="skill-bar-fill" data-p="{{ s.percentage }}"></div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="bio-chips" style="margin-top: 1.4rem">
+              {% for s in skills %}<span class="tag">{{ s.name }}</span>{% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <span>{{ profile.footer_copy }}</span>
+      <div style="display: flex; gap: 1.4rem">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'Main' %}">Portfolio</a>
+        <a href="{% url 'contact' %}">Contact</a>
+      </div>
+    </footer>
+    <script>
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("in");
+            const f = e.target.querySelector(".skill-bar-fill");
+            if (f) {
+              f.style.width = f.dataset.p + "%";
+              f.classList.add("lit");
+              const p = e.target.querySelector(".skill-pct");
+              if (p) p.classList.add("show");
+            }
+            obs.unobserve(e.target);
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document
+        .querySelectorAll(".sr,.sr-l,.sr-r,.skill-row")
+        .forEach((el) => obs.observe(el));
+    </script>
+  </body>
+</html>

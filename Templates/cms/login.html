@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>CMS Access</title>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: var(--bg-base);
+      }
+      .login-wrap {
+        width: 100%;
+        max-width: 380px;
+        padding: 1.5rem;
+      }
+      .login-card {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-xl);
+        padding: 2.5rem 2.25rem;
+        box-shadow: var(--sh-lg);
+        position: relative;
+        overflow: hidden;
+      }
+      .login-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--cyan),
+          var(--violet),
+          transparent
+        );
+      }
+      .login-logo {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--t1);
+        text-align: center;
+        margin-bottom: 0.3rem;
+        letter-spacing: -0.02em;
+      }
+      .login-logo span {
+        color: var(--cyan);
+        text-shadow: 0 0 12px var(--cyan);
+      }
+      .login-sub {
+        font-family: "Fira Code", monospace;
+        font-size: 0.7rem;
+        color: var(--t3);
+        text-align: center;
+        margin-bottom: 2rem;
+        letter-spacing: 0.08em;
+      }
+      .err {
+        background: var(--red-dim);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        border-radius: var(--r);
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.1rem;
+        font-size: 0.83rem;
+        color: var(--red);
+        text-align: center;
+      }
+      .login-card .f-label {
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+      .lock-icon {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 1.25rem;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="lock-icon">🔐</div>
+        <div class="login-logo">Vipul<span>.</span>CMS</div>
+        <div class="login-sub">// restricted access</div>
+        {% if error %}
+        <div class="err">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          <div class="f-group">
+            <label class="f-label">Password</label>
+            {{ form.password }}
+          </div>
+          <button type="submit" class="submit-btn" style="margin-top: 0.5rem">
+            Enter →
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

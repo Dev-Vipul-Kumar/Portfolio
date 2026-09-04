@@ -1,0 +1,255 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>FAQ - {{ profile.full_name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
+    <style>
+      body {
+        padding-top: 64px;
+      }
+      .faq-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.35fr;
+        gap: 2.8rem;
+        align-items: start;
+      }
+      .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .faq-item {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-lg);
+        overflow: hidden;
+        box-shadow: var(--sh-card);
+        transition:
+          border-color 0.25s,
+          box-shadow 0.25s;
+      }
+      .faq-item.open {
+        border-color: rgba(0, 212, 255, 0.28);
+        box-shadow:
+          var(--sh-sm),
+          0 0 18px rgba(0, 212, 255, 0.07);
+      }
+      .faq-q {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.1rem 1.35rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: var(--body);
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--t1);
+        text-align: left;
+        gap: 1rem;
+        transition: background 0.2s;
+      }
+      .faq-q:hover {
+        background: rgba(0, 212, 255, 0.03);
+      }
+      .faq-item.open .faq-q {
+        color: var(--cyan);
+      }
+      .fq-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        border: 1px solid var(--b1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: var(--t3);
+        transition:
+          transform 0.3s,
+          border-color 0.3s,
+          color 0.3s,
+          background 0.3s;
+      }
+      .faq-item.open .fq-icon {
+        transform: rotate(45deg);
+        border-color: rgba(0, 212, 255, 0.35);
+        color: var(--cyan);
+        background: var(--cyan-dim);
+      }
+      .faq-a {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.35s ease,
+          padding 0.35s ease;
+      }
+      .faq-item.open .faq-a {
+        max-height: 320px;
+        padding: 0 1.35rem 1.15rem;
+      }
+      .faq-a p {
+        font-size: 0.875rem;
+        color: var(--t2);
+        line-height: 1.8;
+        padding-top: 0.65rem;
+        border-top: 1px solid var(--b1);
+      }
+      .form-card {
+        background: var(--bg-card);
+        border: 1px solid var(--b1);
+        border-radius: var(--r-xl);
+        padding: 2.25rem 2.25rem 2rem;
+        box-shadow: var(--sh-card);
+        position: sticky;
+        top: 84px;
+        overflow: hidden;
+      }
+      .form-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--cyan),
+          var(--violet),
+          transparent
+        );
+      }
+      .form-card h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--t1);
+        margin-bottom: 0.25rem;
+      }
+      .form-card .fc-sub {
+        font-size: 0.82rem;
+        color: var(--t3);
+        margin-bottom: 1.75rem;
+        font-family: var(--mono);
+        letter-spacing: 0.02em;
+      }
+      @media (max-width: 780px) {
+        .faq-layout {
+          grid-template-columns: 1fr;
+        }
+        .form-card {
+          position: static;
+        }
+      }
+    </style>
+      <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml" />
+  </head>
+  <body>
+    <nav class="nav scrolled" style="position: sticky; top: 0">
+      <a href="{% url 'home' %}" class="nav-logo"
+        >{{ profile.first_name }}<span class="dot">.</span>{{ profile.last_name }}</a
+      >
+      <div class="nav-links" style="display: flex">
+        <a href="{% url 'home' %}" class="nav-link">Home</a>
+        <a href="{% url 'Main' %}" class="nav-link">Portfolio</a>
+        <a href="{% url 'about' %}" class="nav-link">About</a>
+        <a href="{% url 'contact' %}" class="nav-link">Contact</a>
+      </div>
+    </nav>
+    <div class="page-hero">
+      <p class="page-hero-label">FAQ</p>
+      <h1>Frequently Asked Questions</h1>
+      <p>
+        Common questions about my work and services. Can't find your answer?
+        Submit it below.
+      </p>
+    </div>
+    <section class="section">
+      <div class="faq-layout">
+        <div class="sr-l">
+          <div class="faq-list">
+            {% for f in faqs %}
+            <div class="faq-item">
+              <button class="faq-q">
+                {{ f.question }}<span class="fq-icon">+</span>
+              </button>
+              <div class="faq-a"><p>{{ f.answer }}</p></div>
+            </div>
+            {% empty %}
+            <p style="color: var(--t3); font-size: 0.88rem">
+              No FAQ items yet.
+            </p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-card sr-r">
+          <h3>Ask a Question</h3>
+          <p class="fc-sub">// Didn't find your answer? Send it directly.</p>
+          {% if messages %}{% for m in messages %} {% if 'error' in m.tags %}
+          <div class="msg-err">{{ m }}</div>
+          {% else %}
+          <div class="msg-ok">✓ {{ m }}</div>
+          {% endif %} {% endfor %}{% endif %}
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="f-group">
+              <label class="f-label">Your Name</label>{{ form.name }}
+            </div>
+            <div class="f-group">
+              <label class="f-label">Email Address</label>{{ form.email }}
+            </div>
+            <div class="f-group">
+              <label class="f-label">Your Question</label>{{ form.question }}
+            </div>
+            <button type="submit" class="submit-btn">Submit Question →</button>
+          </form>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <span>{{ profile.footer_copy }}</span>
+      <div style="display: flex; gap: 1.4rem">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'Main' %}">Portfolio</a>
+      </div>
+    </footer>
+    <script>
+      document.querySelectorAll(".faq-q").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const item = btn.closest(".faq-item");
+          const wasOpen = item.classList.contains("open");
+          document
+            .querySelectorAll(".faq-item")
+            .forEach((i) => i.classList.remove("open"));
+          if (!wasOpen) item.classList.add("open");
+        });
+      });
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("in");
+            obs.unobserve(e.target);
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document
+        .querySelectorAll(".sr,.sr-l,.sr-r")
+        .forEach((el) => obs.observe(el));
+    </script>
+  </body>
+</html>
