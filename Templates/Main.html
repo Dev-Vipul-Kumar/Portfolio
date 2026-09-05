@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Portfolio - {{ profile.full_name }}</title>
+    <title>Projects - {{ profile.full_name }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
@@ -186,245 +186,6 @@
         border-color: var(--cyan);
         box-shadow: var(--cyan-glow-sm);
       }
-      .skills-grid2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.4rem 4rem;
-        max-width: 860px;
-      }
-      .skill-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.55rem;
-      }
-      .skill-name {
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: var(--t1);
-      }
-      .skill-pct {
-        font-family: var(--mono);
-        font-size: 0.72rem;
-        color: var(--cyan);
-        opacity: 0;
-        transition: opacity 0.4s 1s;
-        letter-spacing: 0.04em;
-      }
-      .skill-pct.show {
-        opacity: 1;
-      }
-      .timeline2 {
-        display: flex;
-        flex-direction: column;
-        max-width: 780px;
-      }
-      .tl-item {
-        display: flex;
-        gap: 1.5rem;
-        padding-bottom: 2.4rem;
-      }
-      .tl-item:last-child {
-        padding-bottom: 0;
-      }
-      .tl-left {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex-shrink: 0;
-        padding-top: 3px;
-      }
-      .tl-line {
-        width: 1px;
-        flex: 1;
-        margin-top: 10px;
-        background: linear-gradient(
-          to bottom,
-          rgba(0, 212, 255, 0.3),
-          transparent
-        );
-      }
-      .tl-item:last-child .tl-line {
-        display: none;
-      }
-      .tl-card {
-        flex: 1;
-        background: var(--bg-card);
-        border: 1px solid var(--b1);
-        border-radius: var(--r-lg);
-        padding: 1.4rem 1.5rem;
-        box-shadow: var(--sh-card);
-        transition:
-          border-color 0.25s,
-          box-shadow 0.25s;
-      }
-      .tl-card:hover {
-        border-color: rgba(0, 212, 255, 0.2);
-        box-shadow:
-          var(--sh-sm),
-          0 0 20px rgba(0, 212, 255, 0.06);
-      }
-      .tl-head {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        align-items: center;
-        margin-bottom: 0.3rem;
-      }
-      .tl-role {
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 0.98rem;
-        font-weight: 700;
-        color: var(--t1);
-      }
-      .tl-at {
-        font-size: 0.82rem;
-        color: var(--cyan);
-        font-weight: 600;
-      }
-      .tl-date {
-        font-family: var(--mono);
-        font-size: 0.7rem;
-        color: var(--t3);
-        margin-bottom: 0.8rem;
-        margin-top: 0.1rem;
-      }
-      .tl-card ul {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-      }
-      .tl-card ul li {
-        font-size: 0.875rem;
-        color: var(--t2);
-        padding-left: 1.2rem;
-        position: relative;
-        line-height: 1.65;
-      }
-      .tl-card ul li::before {
-        content: "▸";
-        position: absolute;
-        left: 0;
-        color: var(--cyan);
-        font-size: 0.7rem;
-        top: 0.2em;
-      }
-      .certs-grid2 {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-        gap: 1rem;
-      }
-      .cert-card {
-        background: var(--bg-card);
-        border: 1px solid var(--b1);
-        border-radius: var(--r-lg);
-        padding: 1.4rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.55rem;
-        box-shadow: var(--sh-card);
-        transition:
-          border-color 0.25s,
-          transform 0.25s,
-          box-shadow 0.25s;
-        position: relative;
-        overflow: hidden;
-      }
-      .cert-card::before {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--cyan), var(--violet));
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.3s ease;
-      }
-      .cert-card:hover {
-        border-color: rgba(0, 212, 255, 0.25);
-        transform: translateY(-4px);
-        box-shadow:
-          var(--sh-md),
-          0 0 20px rgba(0, 212, 255, 0.08);
-      }
-      .cert-card:hover::before {
-        transform: scaleX(1);
-      }
-      .cert-ico {
-        width: 40px;
-        height: 40px;
-        border-radius: var(--r);
-        background: var(--bg-overlay);
-        border: 1px solid var(--b1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-      }
-      .cert-name {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--t1);
-        line-height: 1.4;
-      }
-      .cert-issuer {
-        font-family: var(--mono);
-        font-size: 0.7rem;
-        color: var(--t3);
-        letter-spacing: 0.04em;
-      }
-      .resume-box {
-        max-width: 560px;
-        margin: 0 auto;
-        text-align: center;
-        background: var(--bg-card);
-        border: 1px solid var(--b1);
-        border-radius: var(--r-xl);
-        padding: 3rem 2.5rem;
-        box-shadow: var(--sh-card);
-        position: relative;
-        overflow: hidden;
-      }
-      .resume-box::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--cyan),
-          var(--violet),
-          transparent
-        );
-      }
-      .resume-box h3 {
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--t1);
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.02em;
-      }
-      .resume-box p {
-        font-size: 0.9rem;
-        color: var(--t2);
-        margin-bottom: 1.75rem;
-        line-height: 1.75;
-      }
-      .resume-chips {
-        display: flex;
-        justify-content: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        margin-bottom: 2rem;
-      }
       .status-live {
         background: var(--emerald-dim);
         color: var(--emerald);
@@ -447,28 +208,9 @@
         border-radius: var(--r-sm);
         letter-spacing: 0.04em;
       }
-
-      /* ── Additional responsive fixes ── */
-      @media (max-width: 600px) {
-        .tl-item { gap: 0.75rem; }
-        .tl-left { display: none; }
-      }
       /* footer */
       footer { flex-wrap: wrap; gap: 0.75rem; }
-      @media (max-width: 480px) {
-        footer {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.6rem;
-          padding: 1.5rem max(1.25rem, 4vw);
-        }
-        footer div { flex-wrap: wrap; gap: 0.9rem; }
-      }
       @media (max-width: 768px) {
-        .skills-grid2 {
-          grid-template-columns: 1fr;
-          gap: 1.1rem;
-        }
         .pd-footer {
           flex-direction: column;
           align-items: flex-start;
@@ -479,8 +221,17 @@
           padding: 1.25rem;
         }
       }
+      @media (max-width: 480px) {
+        footer {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.6rem;
+          padding: 1.5rem max(1.25rem, 4vw);
+        }
+        footer div { flex-wrap: wrap; gap: 0.9rem; }
+      }
     </style>
-      <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml" />
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml" />
   </head>
   <body>
     <nav class="nav scrolled" style="position: sticky; top: 0">
@@ -498,15 +249,16 @@
       <div class="nav-links" id="nav-links">
         <a href="{% url 'home' %}" class="nav-link">Home</a>
         <a href="{% url 'about' %}" class="nav-link">About</a>
-        <a href="{% url 'contact' %}" class="nav-link nav-cta">Hire Me</a>
         <a href="{% url 'faq' %}" class="nav-link">FAQ</a>
+        <a href="{% url 'contact' %}" class="nav-link nav-cta">Hire Me</a>
       </div>
     </nav>
+
     <div class="page-hero">
-      <p class="page-hero-label">Portfolio</p>
-      <h1>Selected Work</h1>
+      <p class="page-hero-label">Projects</p>
+      <h1>My Projects</h1>
       <p>
-        Projects I've designed, built, and shipped - from internship assignments
+        Things I've designed, built, and shipped - from internship assignments
         to personal builds.
       </p>
     </div>
@@ -543,7 +295,8 @@
               target="_blank"
               rel="noopener"
               >↗ Live demo</a
-            >{% endif %} {% if p.github_url %}<a
+            >{% endif %}
+            {% if p.github_url %}<a
               href="{{ p.github_url }}"
               target="_blank"
               rel="noopener"
@@ -553,102 +306,21 @@
           {% endif %}
         </div>
       </div>
+      {% empty %}
+      <p style="color: var(--t3); font-size: 0.9rem">No projects yet.</p>
       {% endfor %}
-    </section>
-
-    <section class="section section-alt" id="skills">
-      <div class="section-label sr">Skills</div>
-      <h2 class="section-title sr">Technical skills</h2>
-      <div class="skills-grid2" style="margin-top: 2.5rem">
-        {% for s in skills %}
-        <div
-          class="skill-row sr{% if not forloop.first %} d{{ forloop.counter0 }}{% endif %}"
-        >
-          <div class="skill-meta">
-            <span class="skill-name">{{ s.name }}</span
-            ><span class="skill-pct">{{ s.percentage }}%</span>
-          </div>
-          <div class="skill-bar-track">
-            <div class="skill-bar-fill" data-p="{{ s.percentage }}"></div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <section class="section" id="exp">
-      <div class="section-label sr">Experience</div>
-      <h2 class="section-title sr">Work history</h2>
-      <div class="timeline2" style="margin-top: 2.5rem">
-        {% for e in exp %}
-        <div class="tl-item sr{% if not forloop.first %} d1{% endif %}">
-          <div class="tl-left">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-card">
-            <div class="tl-head">
-              <span class="tl-role">{{ e.role }}</span>
-              <span class="tl-at">@ {{ e.company }}</span>
-              {% if e.is_fulltime %}<span
-                class="tag tag-emerald"
-                style="font-size: 0.62rem; padding: 0.14rem 0.5rem"
-                >Full-time</span
-              >{% endif %}
-            </div>
-            <div class="tl-date">{{ e.date_range }}</div>
-            <ul>
-              {% for b in e.bullet_list %}
-              <li>{{ b }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <section class="section section-alt">
-      <div class="section-label sr">Credentials</div>
-      <h2 class="section-title sr">Certifications</h2>
-      <div class="certs-grid2" style="margin-top: 2.5rem">
-        {% for c in certs %}
-        <div
-          class="cert-card sr{% if not forloop.first %} d{{ forloop.counter0 }}{% endif %}"
-        >
-          <div class="cert-ico">{{ c.icon }}</div>
-          <div class="cert-name">{{ c.name }}</div>
-          <div class="cert-issuer">{{ c.issuer }}</div>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="resume-box sr">
-        <h3>Download My Resume</h3>
-        <p>{{ profile.resume_note }}</p>
-        <div class="resume-chips">
-          <span class="tag">{{ profile.stat_projects }} Projects</span>
-          <span class="tag tag-violet"
-            >{{ profile.stat_internships }} Internships</span
-          >
-          <span class="tag tag-emerald">BCA 2025</span>
-        </div>
-        <a href="{% static 'Resume.pdf' %}" class="btn btn-primary" download
-          >↓ Download Resume</a
-        >
-      </div>
     </section>
 
     <footer>
       <span>{{ profile.footer_copy }}</span>
       <div style="display: flex; gap: 1.4rem">
         <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
         <a href="{% url 'contact' %}">Contact</a>
         <a href="{% url 'faq' %}">FAQ</a>
       </div>
     </footer>
+
     <script>
       /* hamburger */
       const hbg=document.getElementById('hbg'),nl=document.getElementById('nav-links');
@@ -661,21 +333,12 @@
           entries.forEach((e) => {
             if (!e.isIntersecting) return;
             e.target.classList.add("in");
-            const f = e.target.querySelector(".skill-bar-fill");
-            if (f) {
-              f.style.width = f.dataset.p + "%";
-              f.classList.add("lit");
-              const p = e.target.querySelector(".skill-pct");
-              if (p) p.classList.add("show");
-            }
             obs.unobserve(e.target);
           });
         },
         { threshold: 0.12 },
       );
-      document
-        .querySelectorAll(".sr,.sr-l,.sr-r,.skill-row")
-        .forEach((el) => obs.observe(el));
+      document.querySelectorAll(".sr,.sr-l,.sr-r").forEach((el) => obs.observe(el));
     </script>
   </body>
 </html>

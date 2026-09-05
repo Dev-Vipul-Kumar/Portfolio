@@ -831,7 +831,7 @@
       <a href="#hero" class="sn-dot" title="Top"></a>
       <a href="#about" class="sn-dot" title="About"></a>
       <a href="#skills" class="sn-dot" title="Skills"></a>
-      <a href="#projects" class="sn-dot" title="Projects"></a>
+      <a href="{% url 'projects' %}" class="sn-dot" title="Projects"></a>
       <a href="#experience" class="sn-dot" title="Experience"></a>
       <a href="#certs" class="sn-dot" title="Certs"></a>
       <a href="#contact" class="sn-dot" title="Contact"></a>
@@ -853,7 +853,7 @@
       <div class="nav-links" id="nav-links">
         <a href="#about" class="nav-link">About</a>
         <a href="#skills" class="nav-link">Skills</a>
-        <a href="#projects" class="nav-link">Projects</a>
+        <a href="{% url 'projects' %}" class="nav-link">Projects</a>
         <a href="#experience" class="nav-link">Experience</a>
         <a href="#contact" class="nav-link">Contact</a>
         <a href="{% url 'contact' %}" class="nav-link nav-cta">Hire Me</a>
@@ -889,7 +889,7 @@
         </p>
         <p class="hero-desc">{{ profile.hero_description|safe }}</p>
         <div class="hero-btns">
-          <a href="#projects" class="btn btn-primary">View My Work ↓</a>
+          <a href="{% url 'projects' %}" class="btn btn-primary">View My Work ↓</a>
           <a href="{% url 'contact' %}" class="btn btn-outline">Get In Touch</a>
           <a href="{% static 'Resume.pdf' %}" class="btn btn-ghost" download
             >↓ Resume</a
@@ -1040,65 +1040,6 @@
           </div>
         </div>
         {% endfor %}
-      </div>
-    </section>
-
-    <!-- ══ PROJECTS ══ -->
-    <section class="section section-alt" id="projects">
-      <div class="section-label sr">Projects</div>
-      <h2 class="section-title sr">Things I've built</h2>
-      <p class="section-sub sr" style="margin-bottom: 2.8rem">
-        A selection of production and personal projects.
-      </p>
-      <div class="projects-grid">
-        {% for p in projects %}
-        <div
-          class="proj-card sr{% if not forloop.first %} d{{ forloop.counter0 }}{% endif %}"
-        >
-          <div class="proj-top">
-            <div class="proj-icon">{{ p.icon }}</div>
-            <div
-              style="
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 0.4rem;
-              "
-            >
-              <span class="proj-status status-{{ p.status }}"
-                >{% if p.status == 'live' %}● Live{% else %}◐ In progress{% endif %}</span
-              >
-              {% if p.live_url or p.github_url %}
-              <div class="proj-links-top">
-                {% if p.live_url %}<a
-                  href="{{ p.live_url }}"
-                  target="_blank"
-                  rel="noopener"
-                  title="Live demo"
-                  >↗</a
-                >{% endif %} {% if p.github_url %}<a
-                  href="{{ p.github_url }}"
-                  target="_blank"
-                  rel="noopener"
-                  title="Source"
-                  >&lt;/&gt;</a
-                >{% endif %}
-              </div>
-              {% endif %}
-            </div>
-          </div>
-          <div class="proj-name">{{ p.name }}</div>
-          <div class="proj-desc">{{ p.description }}</div>
-          <div class="proj-tags">
-            {% for t in p.tag_list %}<span class="tag">{{ t }}</span>{% endfor %}
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      <div style="text-align: center; margin-top: 2.5rem">
-        <a href="{% url 'Main' %}" class="btn btn-outline sr"
-          >View full portfolio →</a
-        >
       </div>
     </section>
 

@@ -62,7 +62,7 @@ def about(request):
     return render(request, "about.html", _public_ctx())
 
 
-def Main(request):
+def projects(request):
     return render(request, "Main.html", _public_ctx())
 
 

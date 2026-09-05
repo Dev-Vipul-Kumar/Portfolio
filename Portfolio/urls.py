@@ -9,7 +9,7 @@ urlpatterns = [
     # ── Public pages ──────────────────────────────────────────
     path("",        v.homepage,   name="home"),
     path("about/",  v.about,      name="about"),
-    path("Main/",   v.Main,       name="Main"),
+    path("projects/", v.projects,  name="projects"),
     path("contact/",v.contact,    name="contact"),
     path("FAQ/",    v.faq_view,   name="faq"),
     path("healthz/",v.health_check),
