@@ -1,8 +1,13 @@
 """
 python manage.py seed_cms
 
-Populates the database with Vipul's real portfolio data.
-Safe to re-run - uses get_or_create / update_or_create throughout.
+Populates the database with initial portfolio data ONLY if the table is empty.
+Safe to re-run - if data already exists it is left completely untouched so that
+any changes made through the CMS are preserved across server restarts and
+re-deploys.
+
+To force a full reset (wipes all CMS edits) run:
+    python manage.py seed_cms --force
 """
 from django.core.management.base import BaseCommand
 from PF_App.models import (
@@ -12,20 +17,33 @@ from PF_App.models import (
 
 
 class Command(BaseCommand):
-    help = "Seed CMS with initial portfolio data"
+    help = "Seed CMS with initial portfolio data (skips if data already exists)"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--force",
+            action="store_true",
+            help="Overwrite existing data with the defaults (use with caution).",
+        )
 
     def handle(self, *args, **options):
-        self._profile()
-        self._roles()
-        self._skills()
-        self._projects()
-        self._experience()
-        self._certs()
-        self._faqs()
-        self.stdout.write(self.style.SUCCESS("✓ CMS seeded successfully."))
+        force = options["force"]
+        self._profile(force)
+        self._roles(force)
+        self._skills(force)
+        self._projects(force)
+        self._experience(force)
+        self._certs(force)
+        self._faqs(force)
+        self.stdout.write(self.style.SUCCESS("✓ CMS seed complete."))
 
     # ── Profile ──────────────────────────────────────────────────────────────
-    def _profile(self):
+    def _profile(self, force):
+        exists = SiteProfile.objects.filter(pk=1).exists()
+        if exists and not force:
+            self.stdout.write("  - SiteProfile: already exists, skipping.")
+            return
+
         p, _ = SiteProfile.objects.get_or_create(pk=1)
         p.full_name         = "Vipul Kumar"
         p.first_name        = "Vipul"
@@ -68,20 +86,28 @@ class Command(BaseCommand):
         self.stdout.write("  ✓ SiteProfile")
 
     # ── Typed Roles ───────────────────────────────────────────────────────────
-    def _roles(self):
+    def _roles(self, force):
+        if TypedRole.objects.exists() and not force:
+            self.stdout.write("  - TypedRoles: already exist, skipping.")
+            return
+
         TypedRole.objects.all().delete()
         data = [
-            ("Software Developer", 0),
-            ("Django Developer",   1),
-            ("Full-Stack Developer", 2),
-            ("Problem Solver",     3),
+            ("Software Developer",    0),
+            ("Django Developer",      1),
+            ("Full-Stack Developer",  2),
+            ("Problem Solver",        3),
         ]
         for label, order in data:
             TypedRole.objects.create(label=label, order=order)
         self.stdout.write("  ✓ TypedRoles")
 
     # ── Skills ────────────────────────────────────────────────────────────────
-    def _skills(self):
+    def _skills(self, force):
+        if Skill.objects.exists() and not force:
+            self.stdout.write("  - Skills: already exist, skipping.")
+            return
+
         Skill.objects.all().delete()
         data = [
             ("HTML / CSS",     92, 0),
@@ -98,7 +124,11 @@ class Command(BaseCommand):
         self.stdout.write("  ✓ Skills")
 
     # ── Projects ──────────────────────────────────────────────────────────────
-    def _projects(self):
+    def _projects(self, force):
+        if Project.objects.exists() and not force:
+            self.stdout.write("  - Projects: already exist, skipping.")
+            return
+
         Project.objects.all().delete()
         data = [
             {
@@ -137,7 +167,11 @@ class Command(BaseCommand):
         self.stdout.write("  ✓ Projects")
 
     # ── Experience ────────────────────────────────────────────────────────────
-    def _experience(self):
+    def _experience(self, force):
+        if Experience.objects.exists() and not force:
+            self.stdout.write("  - Experience: already exists, skipping.")
+            return
+
         Experience.objects.all().delete()
         data = [
             {
@@ -170,20 +204,28 @@ class Command(BaseCommand):
         self.stdout.write("  ✓ Experience")
 
     # ── Certifications ────────────────────────────────────────────────────────
-    def _certs(self):
+    def _certs(self, force):
+        if Certification.objects.exists() and not force:
+            self.stdout.write("  - Certifications: already exist, skipping.")
+            return
+
         Certification.objects.all().delete()
         data = [
-            ("C Language Programming",                    "Naresh IT", "💻", 0),
-            ("Java Programming",                          "Udemy",     "☕", 1),
-            ("Python & Django Full-Stack Web Development","Udemy",     "🐍", 2),
-            ("React, Node, Express & MongoDB - MERN",     "Udemy",     "⚛️", 3),
+            ("C Language Programming",                     "Naresh IT", "💻", 0),
+            ("Java Programming",                           "Udemy",     "☕", 1),
+            ("Python & Django Full-Stack Web Development", "Udemy",     "🐍", 2),
+            ("React, Node, Express & MongoDB - MERN",      "Udemy",     "⚛️", 3),
         ]
         for name, issuer, icon, order in data:
             Certification.objects.create(name=name, issuer=issuer, icon=icon, order=order)
         self.stdout.write("  ✓ Certifications")
 
     # ── FAQ Items ─────────────────────────────────────────────────────────────
-    def _faqs(self):
+    def _faqs(self, force):
+        if FAQItem.objects.exists() and not force:
+            self.stdout.write("  - FAQItems: already exist, skipping.")
+            return
+
         FAQItem.objects.all().delete()
         data = [
             ("What technologies do you work with?",
